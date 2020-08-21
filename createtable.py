@@ -1,12 +1,7 @@
-import tweepy
-import re
 import sqlite3
-import time
 import os.path
-from datetime import datetime, timezone, timedelta, date
-from main import updatetwt
+from main import createtable
 import config
-
 
 auth = tweepy.OAuthHandler(config.consumer_key, config.consumer_secret)
 auth.set_access_token(config.access_token, config.access_token_secret)
@@ -16,7 +11,7 @@ filename = 'yourdatabasefile.db'
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(BASE_DIR, filename)
 
-updatetwt(api, db_path)
+createtable(db_path)
 
 
 

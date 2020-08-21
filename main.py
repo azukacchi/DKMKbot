@@ -22,6 +22,9 @@ def createtable(db_path):
     cursor.execute(create_twt_table)
     connection.commit()
 
+    cursor.close()
+    connection.close()
+
     return
 
 
@@ -31,7 +34,7 @@ def updatetwt(api, db_path):
     # checking newest tweets to 7 days back
     n = 40
     search_words = 'YOUR-OTP-NAME-HERE' #put your keywords here
-    criteria='min_faves:15 filter:media'
+    criteria='min_faves:15 filter:media' #example of filter and criteria
     date_since = date.today() - timedelta(days=7)
     
     new_search = search_words + " " + criteria
@@ -133,9 +136,9 @@ def checkdm(api, db_path):
         if '(YOUR-TRIGGER-WORD-HERE)' in dm.message_create['message_data']['text']:
             urls = dm.message_create['message_data']['entities']['urls']
             if len(urls) >0:
-                isilink = urls[0]['expanded_url']
+                linkcontent = urls[0]['expanded_url']
                 regex = r'(?=twitter\.com\/\w+\/status\/(\d+))'
-                dmtwtid = int(re.findall(regex, isilink)[0])
+                dmtwtid = int(re.findall(regex, linkcontent)[0])
                 #isidm.append(dmtwtid)
             
                 try:        
