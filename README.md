@@ -64,7 +64,7 @@ tweets = tweepy.Cursor(api.search, q=new_search, lang='ko', since=date_since, tw
 ```
 
 #### API.favorites part explanation:
-You might ask, why the API.favorites? This is used to collect the tweets from the authenticated user's (your bot account's) favorite tab. Twitter's Standard search API (the free one) limits the search query to 7 days back, which means if my ***rarepair*** (in bold and italic, lol) bot were to collect the tweets through API.search method, the contents of my bot would be very limited. The workaround is to search the tweets manually (like you usually do on your mobile/desktop) using standard search operator (read <a href="https://developer.twitter.com/en/docs/twitter-api/v1/tweets/search/guides/standard-operators">here</a>). On mobile/desktop you can easliy search tweets way far back than just the 7 days limit by API.search. Then the bot will scrape them for you and unlike the tweets. 
+You might ask, why the API.favorites? This is used to collect the tweets from the authenticated user's (your bot account's) favorite tab. Twitter's Standard search API (the free one) limits the search query to 7 days back, which means if my ***rarepair*** (in bold and italic, lol) bot were to collect the tweets through API.search method, the contents of my bot would be very limited. The workaround is to search the tweets manually (like you usually do on your mobile/desktop) using standard search operator (read <a href="https://developer.twitter.com/en/docs/twitter-api/v1/tweets/search/guides/standard-operators">here</a>). On mobile/desktop you can easily search tweets way far back than just the 7 days limit by API.search. Then the bot will scrape them for you and unlike the tweets. 
 ```
 tweets2 = tweepy.Cursor(api.favorites, q=api.me().screen_name, tweet_mode='extended', lang='ko').items()
 for tweet in tweets2:
@@ -90,7 +90,7 @@ See the code details in `main.py` under `updatetwt()` function on how the tweet 
 
 ### 4. retweetbot.py
 
-Another feature of this bot is collecting suggestion (tweets to be retweeted) through DM, which is done by the `checkdm()` function. The submission should be written as `<triggerword> <link to the tweet>` in one message, thus the tweet will be collected ONLY if it contains the trigger word AND a link to a tweet. The tweets that are collected through submission will be given the priority to be retweeteed, thus will be given `RTStatus` value of 2.
+Another feature of this bot is collecting suggestion (tweets to be retweeted) through DM, which is done by the `checkdm()` function. The submission should be written as `<triggerword> <link to the tweet>` in one message, thus the tweet will be collected ONLY if the DM contains the trigger word AND a link to a tweet. The tweets that are collected through submission will be given the priority to be retweeted, thus will be given `RTStatus` value of 2.
 #### checkdm() part explanation:
 ```
 dms = api.list_direct_messages(count=15)
@@ -114,7 +114,7 @@ connection = sqlite3.connect(db_path)
 cursor = connection.cursor()
 
 cursor.execute('SELECT ID, RTStatus, DMSender FROM tweets WHERE \
-    RTStatus == 2 OR RTStatus IS NULL ORDER BY RTStatus DESC, Time')
+    RTStatus == 2 OR RTStatus IS NULL GROUP BY Username ORDER BY RTStatus DESC')
 datafin1 = cursor.fetchmany(1) # I only take 1 tweet each time I retweet
 connection.commit()
         
@@ -146,4 +146,5 @@ Paste your keys and tokens you get from your Twitter developer account in this f
 
 
 ## How do I automate the script
-I use Task Scheduler on Windows (open Start then search Task Scheduler) to run the `retweetbot.py` every two hours and `updatebot.py` every 8 hours. This app is quite simple to use, the only downturn is it only runs when your computer is either turned on or sleep but not shutdown (obviously). Some helpful tutorials can be found [here](https://www.jcchouinard.com/python-automation-using-task-scheduler/) and [here](https://dev.to/abautista/automate-a-python-script-with-task-scheduler-3fb6). 
+I use Task Scheduler on Windows (open Start then search Task Scheduler) to run the `retweetbot.py` every two hours and `updatebot.py` every 8 hours. This app is quite simple to use, the only downturn is it only runs when your computer is either turned on or sleep but not shutdown (obviously). Some helpful tutorials can be found [here](https://www.jcchouinard.com/python-automation-using-task-scheduler/) and [here](https://dev.to/abautista/automate-a-python-script-with-task-scheduler-3fb6).
+

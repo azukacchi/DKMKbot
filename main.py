@@ -91,7 +91,7 @@ def retweet(api, db_path):
     connection = sqlite3.connect(db_path)
     cursor = connection.cursor()
     cursor.execute('SELECT ID, RTStatus, DMSender FROM tweets WHERE \
-    RTStatus == 2 OR RTStatus IS NULL ORDER BY RTStatus DESC, Time')
+    RTStatus == 2 OR RTStatus IS NULL GROUP BY Username ORDER BY RTStatus DESC')
     datafin1 = cursor.fetchmany(1)
     connection.commit()
         
