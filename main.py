@@ -101,14 +101,18 @@ def retweet(api, db_path):
 
 
     for id in idtwt:
-        api.retweet(id=id)
+        try:
+            api.retweet(id=id)
+            if rtstatus == 2:
+                senddm(api, dmsender)
 
-    if rtstatus == 2:
-        senddm(api, dmsender)
+            for id in idtwt:
+                cursor.execute('UPDATE tweets SET RTStatus=1 WHERE ID=?', (id,))
+                connection.commit()
 
-    for id in idtwt:
-        cursor.execute('UPDATE tweets SET RTStatus=1 WHERE ID=?', (id,))
-    connection.commit()
+        except tweepy.error.TweepError:
+            cursor.execute("DELETE FROM tweets WHERE ID=?", (id,))
+            connection.commit()
 
     cursor.close()
     connection.close()

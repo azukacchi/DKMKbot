@@ -124,16 +124,18 @@ dmsender = [twt[2] for twt in datafin1]
 # i'll use dmsender for senddm()
 
 for id in idtwt:
-     api.retweet(id=id)
+    try:
+        api.retweet(id=id)
+        if rtstatus == 2:
+            senddm(api, dmsender)
 
-if rtstatus == 2:
-    senddm(api, dmsender)
-    # explanation for this function below
+        for id in idtwt:
+            cursor.execute('UPDATE tweets SET RTStatus=1 WHERE ID=?', (id,))
+            connection.commit()
 
-for id in idtwt:
-    cursor.execute('UPDATE tweets SET RTStatus=1 WHERE ID=?', (id,))
-    # any retweeted tweets will have RTStatus = 1
-    connection.commit()
+    except tweepy.error.TweepError:
+        cursor.execute("DELETE FROM tweets WHERE ID=?", (id,))
+        connection.commit()
 ```
 #### senddm() part explanation:
 Because the bot will not retweet the suggestion as soon as the DM is received, I added the feature to notify the DM sender when the suggestion is retweeted with this function. You can omit this function by deleting this block inside the `retweet()` function.
