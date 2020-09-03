@@ -45,13 +45,16 @@ def updatetwt(api, db_path):
     username = []
 
     for tweet in tweets:
-        item = []
-        item.append(' '.join(re.sub("(@[A-Za-z0-9]+)|(\w+:\/\/\S+)", " ",tweet.full_text.lower()).split()))
-        #item.append(tweet.full_text)
-        items.append(item[0])
-        username.append(tweet.user.screen_name)
-        twtid.append(tweet.id)
-        twtdate.append(tweet.created_at)
+        if '트친소' in tweet.full_text:
+            continue
+        else:
+            item = []
+            item.append(' '.join(re.sub("(@[A-Za-z0-9]+)|(\w+:\/\/\S+)", " ",tweet.full_text.lower()).split()))
+            #item.append(tweet.full_text)
+            items.append(item[0])
+            username.append(tweet.user.screen_name)
+            twtid.append(tweet.id)
+            twtdate.append(tweet.created_at)
 
     #checking the favorite tabs (which I do manually to collect contents other than 7 days)
     tweets2 = tweepy.Cursor(api.favorites, q=api.me().screen_name, tweet_mode='extended', lang='ko').items()
@@ -199,4 +202,5 @@ def senddm(api, dmsender):
         api.send_direct_message(recipient_id=dmsender, text=f.read())
     print('Finished.')
     return
+    
     
